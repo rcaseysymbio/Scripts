@@ -6,7 +6,7 @@
 
       $Phone=read-host -prompt "Phone Number?"
 	  
-      $Title=$_.title
+      $DisplayName = "$Name $last"
 	  
       $FirstNameInit=$name
 
@@ -87,7 +87,7 @@
 
        
 
-       new-mailbox -name $name -alias $alias -Firstname $_.Firstname -LastName $_.Lastname -userPrincipalName $userprincipalname `
+       new-mailbox -name $name -alias $alias -Firstname $name -LastName $last -userPrincipalName $userprincipalname `
 
        -database $Database -OrganizationalUnit $templateDN -Password $Password
 
@@ -99,19 +99,17 @@ function CreateHomeDir
 
    Param([string]$user)
 
-   $homepath="f:\Users\$user"
-
-   $shareName="$user$"
+   $shareName="$user"
 
    $Type=0
 
-   $pathToShare="\\acmenet01\f$\Users\$user"
+   $pathToShare="\\$clienturl\home\$user"
 
    New-Item -type directory -path $pathToShare|Out-Null
 
-   $WMI=[wmiClass]"\\acmenet01\root\cimV2:Win32_Share"
+   $WMI=[wmiClass]"\\$clienturl\root\cimV2:Win32_Share"
 
-   $WMI.Create($homepath,$shareName,$Type)|Out-Null
+   $WMI.Create($shareName,$Type)|Out-Null
 
 }
 
@@ -223,13 +221,13 @@ function SetSharePerm
 
    Param([string]$user)
 
-   $shareName="\\acmenet01\$user$"
+   $shareName="\\$clienturl\home\$user"
 
-   $userName="acme\$user"
+   $userName="$clienturl\$user"
 
    $SUBINACL='c:\subinacl.exe'
 
-   &$SUBINACL /Share $shareName /grant="acme\Domain Admins"=F /grant=$userName=C |Out-Null
+   &$SUBINACL /Share $shareName /grant="$clienturl\Domain Admins"=F /grant=$userName=C |Out-Null
 
 }
 
