@@ -6,6 +6,8 @@
 
       $Phone=read-host -prompt "Phone Number?"
 	  
+      $Password=read-host -prompt "Password?" -AsSecureString
+	  
       $DisplayName = "$Name $last"
 	  
       $FirstNameInit=$name
@@ -20,7 +22,7 @@
 
       $DeptNumber=read-host -prompt "Client Code?"
 	  
-	  //Select URL from Client Code
+//Select URL from Client Code
       switch -regex ($DeptNumber)
 	  {
 		"[p2p]" {$clienturl=power2practice.com}
@@ -232,47 +234,47 @@ function SetSharePerm
 }
 
 //Finally, we will send an email to the Help Desk to notify them that the accounts have been created.
-
-function mailit {
-
-Param(
-
-[string]$user,
-
-[string]$FirstName,
-
-[string]$LastName
-
-)
-
-$EmailList="helpdesk@acme.org"
-
-$MailMessage= @{
-
-To=$EmailList
-
-From="DONOTREPLY@acme.org"
-
-Subject="NEW USER ACCorganizational unitNT"
-
-Body="A new user account has been created. Initial login information listed below: `n
-
-First name: $FirstName
-
-Last name:  $LastName
-
-Userid: $user
-
-Password: letmein
-
-Thank You."
-
-SmtpServer="smtp.acme.org"
-
-ErrorAction="Stop"
-
-            }
-
-Send-MailMessage @MailMessage
-
-}
+//not required at the moment
+//function mailit {
+//
+//Param(
+//
+//[string]$user,
+//
+//[string]$FirstName,
+//
+//[string]$LastName
+//
+//)
+//
+//$EmailList="helpdesk@acme.org"
+//
+//$MailMessage= @{
+//
+//To=$EmailList
+//
+//From="DONOTREPLY@acme.org"
+//
+//Subject="NEW USER ACCorganizational unitNT"
+//
+//Body="A new user account has been created. Initial login information listed below: `n
+//
+//First name: $FirstName
+//
+//Last name:  $LastName
+//
+//Userid: $user
+//
+//Password: letmein
+//
+//Thank You."
+//
+//SmtpServer="smtp.acme.org"
+//
+//ErrorAction="Stop"
+//
+//            }
+//
+//Send-MailMessage @MailMessage
+//
+//}
