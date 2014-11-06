@@ -28,7 +28,7 @@
 		"[p2p]" {$clienturl=power2practice.com}
 		"[dgr]" {$clienturl=dgrlegal.com}
 		"[acb]" {$clienturl=acbanet.org}
-		"[pfs]" {$clienturl=pfs-llc.net}
+		"[pfs]" {$clienturl="pfs-llc.net"}
 		"[sfc]" {$clienturl=sfcasa.org}
 		"[hsc]" {$clienturl=hearingspeech.org}
 		"[toe]" {$clienturl=toeroek.com}
