@@ -18,8 +18,6 @@
 	  
 	  $user=$alias
 	  
-	  $userprincipalname="$alias@$clienturl"
-
       $DeptNumber=read-host -prompt "Client Code?"
 	  
 //Select URL from Client Code
@@ -34,6 +32,8 @@
 		"[toe]" {$clienturl=toeroek.com}
 		"[abs]" {$clienturl=absnorthbay.com}
 				}
+
+	  $userprincipalname="$alias@$clienturl"
 
       $suffix="TEMPLATE"
 
@@ -147,53 +147,12 @@ function set-Attributes
 
             $arrAttrs="department"
 
-            $FirstName=$_.Firstname
-
-            $LastName=$_.Lastname
-
-            $displayName="$FirstName $LastName"
-
-            $State="TX"
-
-            $Country="United States"
-
-            $CountryAbbr="US"
-
-            $CountryCode="840"
-
-            $Company="Acme Corporation"
-
-            $ScriptPath="ACMELOG"
-
-            $HomeDrivePath="\\acmenet01\$user$"
-
-            $HomeDrive="U:"
-
-            $user.st=$State
-
-            $user.scriptpath=$ScriptPath
-
-            $user.company=$Company
-
             $user.pwdLastSet=0
-
-            $user.countryCode=$CountryCode
-
-            $user.co=$Country
-
-            $user.c=$CountryAbbr
-
-            $user.employeeID=$EmpID
-
-            $user.title=$Title
 
             $user.displayName=$displayName
 
             $user.SetInfo()
 
-            $user.homeDrive=$HomeDrive
-
-            $user.homeDirectory=$HomeDrivePath
 
             foreach ($Arr In $arrAttrs)
 
@@ -229,7 +188,7 @@ function SetSharePerm
 
    $SUBINACL='c:\subinacl.exe'
 
-   &$SUBINACL /Share $shareName /grant="$clienturl\Domain Admins"=F /grant=$userName=C |Out-Null
+   &$SUBINACL /Share $shareName /grant=$userName=C |Out-Null
 
 }
 
