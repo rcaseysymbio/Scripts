@@ -47,7 +47,7 @@ $tmplateUser=read-host -prompt "User to copy groups from?"
 $tmp = Get-ADUser -Identity $tmplateUser
 $DN = $tmp.distinguishedName
 $tmpUser = [ADSI]"LDAP://$DN"
-$Parent = $tmpUser.Parent
+$Parent = $tmpUser.Parent -Replace "LDAP://", ""
 
 #Creating the new mailbox (and user)
 
@@ -79,7 +79,8 @@ write-host $name
 write-host $user
 write-host $clienturl
 write-host $DeptNumber
-write-host $pathtoshare
+write-host $userpath
+write-host $parent
 
 #Finally, we will send an email to the Help Desk to notify them that the accounts have been created.
 #not required at the moment
