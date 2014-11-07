@@ -19,9 +19,8 @@ $alias="$firstnameinit$lastname"
 	  
 $user=$alias
 	  
-$DeptNumber= read-host -prompt "Client Code?"
-	  
-#Select URL from Client Code
+$DeptNumber = read-host -prompt "Client Code?"
+
       switch -regex ($DeptNumber)
 	  {
 		"[p2p]" {$clienturl="power2practice.com"}
@@ -34,6 +33,7 @@ $DeptNumber= read-host -prompt "Client Code?"
 		"[abs]" {$clienturl="absnorthbay.com"}
         "[sym]" {$clienturl="symbiosystems.com"}
         "[dnc]" {$clienturl="cunningham-md.com"}
+		"[mlg]" {$clienturl="mitchelllawsf.com"}
 				}
 
 	  $userprincipalname="$alias@$clienturl"
@@ -42,7 +42,7 @@ $DeptNumber= read-host -prompt "Client Code?"
 
       $tmplateUser=read-host -prompt "User to copy groups from?"
 
-      $templateDN=Get-ADUser $tmplateUser | select *,@{l='Parent';e={([adsi]"LDAP://$($_.DistinguishedName)").Parent}}
+#      $templateDN=Get-ADUser $tmplateUser | select *,@{l='Parent';e={([adsi]"LDAP://$($_.DistinguishedName)").Parent}}
 
                              
 
@@ -51,49 +51,14 @@ $DeptNumber= read-host -prompt "Client Code?"
 
 #The following function is used to create the home shared folders:
 
-function CreateHomeDir
+$pathToShare="\\$clienturl\home\$user"
 
-{
-
-   Param([string]$user)
-
-   $shareName="$user"
-
-   $Type=0
-
-   $pathToShare="\\$clienturl\home\$user"
-
-   New-Item -type directory -path $pathToShare|Out-Null
-
-   $WMI=[wmiClass]"\\$clienturl\root\cimV2:Win32_Share"
-
-   $WMI.Create($shareName,$Type)|Out-Null
-
-}
+New-Item -type directory -path $pathToShare|Out-Null
 
 #As mentioned earlier, each departmental organizational unit contains a template account with the appropriate security group membership for that department. We use the template account to copy the group membership to the newly created user account. I use the Quest Active Directory tools (the Quest.ActiveRoles.ADManagement add-in), but the script can be easily modified to use the Active Directory module. The function is shown here:
 
-function set-Attributes
+Get-ADUser -Identity $tmplateUser -Properties memberof | Select-Object -ExpandProperty memberof | Add-ADGroupMember -Members $alias
 
-{
-
-   Param(
-
-      [string]$user,
-
-      [string]$tmplateUser
-
-   )
-
- 
-
-   AddToCompanyWideGroup -user $user
-
-
-
-   $groups=Get-ADUser -Identity $tmplateUser -Properties memberof | Select-Object -ExpandProperty memberof | Add-ADGroupMember -Members $alias
-
-}
 
 #Now we need to set the appropriate permission for the home folder.
 
@@ -112,6 +77,11 @@ function SetSharePerm
    &$SUBINACL /Share $shareName /grant=$userName=C |Out-Null
 
 }
+write-host $name
+write-host $user
+write-host $clienturl
+write-host $DeptNumber
+write-host $pathtoshare
 
 #Finally, we will send an email to the Help Desk to notify them that the accounts have been created.
 #not required at the moment
