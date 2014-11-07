@@ -36,26 +36,34 @@ $DeptNumber = read-host -prompt "Client Code?"
 		"[mlg]" {$clienturl="mitchelllawsf.com"}
 				}
 
-	  $userprincipalname="$alias@$clienturl"
+$userprincipalname="$alias@$clienturl"
 
-      $suffix="TEMPLATE"
 
-      $tmplateUser=read-host -prompt "User to copy groups from?"
+#Getting the Parent OU to pass to new-mailbox
+$suffix="TEMPLATE"
 
-#      $templateDN=Get-ADUser $tmplateUser | select *,@{l='Parent';e={([adsi]"LDAP://$($_.DistinguishedName)").Parent}}
+$tmplateUser=read-host -prompt "User to copy groups from?"
+
+$tmp = Get-ADUser -Identity $tmplateUser
+$DN = $tmp.distinguishedName
+$tmpUser = [ADSI]"LDAP://$DN"
+$Parent = $tmpUser.Parent
+
+
 
                              
 
-       new-mailbox -name $DisplayName -alias $alias -Firstname $name -LastName $lastname -userPrincipalName $userprincipalname -OrganizationalUnit $templateDN -Password $Password
+       new-mailbox -name $DisplayName -alias $alias -Firstname $name -LastName $lastname -userPrincipalName $userprincipalname -OrganizationalUnit $Parent -Password $Password
 
 
-#The following function is used to create the home shared folders:
+#The following is used to create the home folder:
 
 $pathToShare="\\$clienturl\home\$user"
 
 New-Item -type directory -path $pathToShare|Out-Null
 
-#As mentioned earlier, each departmental organizational unit contains a template account with the appropriate security group membership for that department. We use the template account to copy the group membership to the newly created user account. I use the Quest Active Directory tools (the Quest.ActiveRoles.ADManagement add-in), but the script can be easily modified to use the Active Directory module. The function is shown here:
+
+#Get groups from $tmplateUser (specified in write-host) and add groups to new user
 
 Get-ADUser -Identity $tmplateUser -Properties memberof | Select-Object -ExpandProperty memberof | Add-ADGroupMember -Members $alias
 
@@ -64,19 +72,20 @@ Get-ADUser -Identity $tmplateUser -Properties memberof | Select-Object -ExpandPr
 
 function SetSharePerm
 
-{
+    {
 
-   Param([string]$user)
+     Param([string]$user)
 
-   $shareName="\\$clienturl\home\$user"
+     $shareName="\\$clienturl\home\$user"
 
-   $userName="$clienturl\$user"
+     $userName="$clienturl\$user"
 
-   $SUBINACL='c:\subinacl.exe'
+     $SUBINACL='c:\subinacl.exe'
 
-   &$SUBINACL /Share $shareName /grant=$userName=C |Out-Null
+     &$SUBINACL /grant=$userName=C |Out-Null
 
-}
+        }
+
 write-host $name
 write-host $user
 write-host $clienturl
