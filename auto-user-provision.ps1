@@ -23,7 +23,11 @@
 //Select URL from Client Code
       switch -regex ($DeptNumber)
 	  {
-		"[p2p]" {$clienturl=power2practice.com}
+		"[p2p]" {
+                 $clienturl="power2practice.com"
+                 $Database="p2p-sfo-mail01\1st storage group"
+                 $TemplateDN="DC=$clienturl, DN="P2P" OU="P2P Users"
+                 }
 		"[dgr]" {$clienturl=dgrlegal.com}
 		"[acb]" {$clienturl=acbanet.org}
 		"[pfs]" {$clienturl="pfs-llc.net"}
@@ -39,7 +43,7 @@
 
       $tmplateUser="$DeptNumber$suffix"
 
-      $templateDN=get-qaduser -includedproperties parentContainerDN  $tmplateUser | Select –ExpandProperty parentContainerDN
+      $templateDN=Get-ADUser $tmplateUser | select *,@{l='Parent';e={([adsi]"LDAP://$($_.DistinguishedName)").Parent}}
 
                        
 				
@@ -89,9 +93,10 @@
 
        
 
-       new-mailbox -name $name -alias $alias -Firstname $name -LastName $last -userPrincipalName $userprincipalname `
+       new-mailbox -name $DisplayName -alias $alias -Firstname $name -LastName $last -userPrincipalName $userprincipalname `
 
        -database $Database -OrganizationalUnit $templateDN -Password $Password
+
 
 //The following function is used to create the home shared folders:
 
