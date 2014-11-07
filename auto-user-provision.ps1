@@ -23,11 +23,7 @@
 //Select URL from Client Code
       switch -regex ($DeptNumber)
 	  {
-		"[p2p]" {
-                 $clienturl="power2practice.com"
-                 $Database="p2p-sfo-mail01\1st storage group"
-                 $TemplateDN="DC=$clienturl, DN="P2P" OU="P2P Users"
-                 }
+		"[p2p]" {$clienturl="power2practice.com"}
 		"[dgr]" {$clienturl=dgrlegal.com}
 		"[acb]" {$clienturl=acbanet.org}
 		"[pfs]" {$clienturl="pfs-llc.net"}
@@ -41,7 +37,7 @@
 
       $suffix="TEMPLATE"
 
-      $tmplateUser="$DeptNumber$suffix"
+      $tmplateUser=read-host -prompt "User to copy groups from?"
 
       $templateDN=Get-ADUser $tmplateUser | select *,@{l='Parent';e={([adsi]"LDAP://$($_.DistinguishedName)").Parent}}
 
