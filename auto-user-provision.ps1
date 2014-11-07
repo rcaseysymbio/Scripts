@@ -49,42 +49,31 @@ $DN = $tmp.distinguishedName
 $tmpUser = [ADSI]"LDAP://$DN"
 $Parent = $tmpUser.Parent
 
+#Creating the new mailbox (and user)
 
-
-                             
-
-       new-mailbox -name $DisplayName -alias $alias -Firstname $name -LastName $lastname -userPrincipalName $userprincipalname -OrganizationalUnit $Parent -Password $Password
+new-mailbox -name $DisplayName -alias $alias -Firstname $name -LastName $lastname -userPrincipalName $userprincipalname -OrganizationalUnit $Parent -Password $Password
 
 
 #The following is used to create the home folder:
 
-$pathToShare="\\$clienturl\home\$user"
+$userpath="\\$clienturl\home\$user"
 
-New-Item -type directory -path $pathToShare|Out-Null
+New-Item -type directory -path $userpath|Out-Null
 
+#Now we need to set the appropriate permission for the home folder.
+
+$acl = Get-Acl ($userpath)
+$acl.SetAccessRuleProtection($false, $true)
+$ace = "$clienturl\$alias","Modify", "ContainerInherit,ObjectInherit","None","Allow"
+$objACE = New-Object System.Security.AccessControl.FileSystemAccessRule($ace)
+$acl.AddAccessRule($objACE)
+Set-ACL -Path "$userpath" -AclObject $acl
 
 #Get groups from $tmplateUser (specified in write-host) and add groups to new user
 
 Get-ADUser -Identity $tmplateUser -Properties memberof | Select-Object -ExpandProperty memberof | Add-ADGroupMember -Members $alias
 
 
-#Now we need to set the appropriate permission for the home folder.
-
-function SetSharePerm
-
-    {
-
-     Param([string]$user)
-
-     $shareName="\\$clienturl\home\$user"
-
-     $userName="$clienturl\$user"
-
-     $SUBINACL='c:\subinacl.exe'
-
-     &$SUBINACL /grant=$userName=C |Out-Null
-
-        }
 
 write-host $name
 write-host $user
