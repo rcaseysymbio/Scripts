@@ -53,6 +53,8 @@ $Parent = $tmpUser.Parent -Replace "LDAP://", ""
 
 new-mailbox -name $DisplayName -alias $alias -Firstname $name -LastName $lastname -userPrincipalName $userprincipalname -OrganizationalUnit $Parent -Password $Password
 
+#Quickly set the phone number
+set-aduser $alias -OfficePhone "$Phone"
 
 #The following is used to create the home folder:
 
