@@ -31,6 +31,8 @@
 		"[hsc]" {$clienturl=hearingspeech.org}
 		"[toe]" {$clienturl=toeroek.com}
 		"[abs]" {$clienturl=absnorthbay.com}
+        "[sym]" {$clienturl=symbiosystems.com}
+        "[dnc]" {$clienturl=cunningham-md.com}
 				}
 
 	  $userprincipalname="$alias@$clienturl"
@@ -41,57 +43,9 @@
 
       $templateDN=Get-ADUser $tmplateUser | select *,@{l='Parent';e={([adsi]"LDAP://$($_.DistinguishedName)").Parent}}
 
-                       
-				
-      switch -regex ($LastNameInit)
+                             
 
-      {
-
-         "[A]" {$Database="ACMEMX02\6th Storage Group\A Mailboxes"}
-
-         "[B]" {$Database="ACMEMX02\7th Storage Group\B Mailboxes"}
-
-         "[E]" {$Database="ACMEMX02\10th Storage Group\E Mailboxes"}
-
-         "[F]" {$Database="ACMEMX02\11th Storage Group\F Mailboxes"}
-
-         "[G]" {$Database="ACMEMX02\12th Storage Group\G Mailboxes"}
-
-         "[S]" {$Database="ACMEMX02\13th Storage Group\S Mailboxes"}
-
-         "[T]" {$Database="ACMEMX02\14th Storage Group\T Mailboxes"}
-
-         "[U-V]" {$Database="ACMEMX02\15th Storage Group\U-V Mailboxes"}
-
-         "[W-Z]" {$Database="ACMEMX02\16th Storage Group\W-Z Mailboxes"}
-
-         "[H]" {$Database="ACMEMX02\17th Storage Group\H Mailboxes"}
-
-         "[I-K]" {$Database="ACMEMX02\18th Storage Group\I-K Mailboxes"}
-
-         "[L]" {$Database="ACMEMX02\19th Storage Group\L Mailboxes"}
-
-         "[M]" {$Database="ACMEMX02\20th Storage Group\M Mailboxes"}
-
-         "[N-O]" {$Database="ACMEMX02\21st Storage Group\N-O Mailboxes"}
-
-         "[P-Q]" {$Database="ACMEMX02\22nd Storage Group\P-Q Mailboxes"}
-
-         "[C]" {$Database="ACMEMX02\8th Storage Group\C Mailboxes"}
-
-         "[D]" {$Database="ACMEMX02\9th Storage Group\D Mailboxes"}
-
-         "[R]" {$Database="ACMEMX02\23rd Storage Group\R Mailboxes"}
-		 
-		 "[ads]" 
-
-                        }
-
-       
-
-       new-mailbox -name $DisplayName -alias $alias -Firstname $name -LastName $last -userPrincipalName $userprincipalname `
-
-       -database $Database -OrganizationalUnit $templateDN -Password $Password
+       new-mailbox -name $DisplayName -alias $alias -Firstname $name -LastName $last -userPrincipalName $userprincipalname -OrganizationalUnit $templateDN -Password $Password
 
 
 //The following function is used to create the home shared folders:
@@ -134,44 +88,9 @@ function set-Attributes
 
    AddToCompanyWideGroup -user $user
 
- 
-
-   $groups=get-qaduser $tmplateUser | select -ExpandProperty memberof
-
-   foreach ($Group In $groups)
-
-   {
-
-      add-qadgroupmember -identity $Group -member $user
-
-   }
-
-            $arrAttrs="department"
-
-            $user.pwdLastSet=0
-
-            $user.displayName=$displayName
-
-            $user.SetInfo()
 
 
-            foreach ($Arr In $arrAttrs)
-
-            {
-
-                        $updatedAttr=$UserToCopy.Get($Arr)
-
-                        $user.Put($Arr,$updatedAttr)
-
-            }
-
-            $user.SetInfo()
-
-            $user.physicalDeliveryOfficeName=$user.department
-
-            $user.description=$user.title
-
-            $user.SetInfo()
+   $groups=Get-ADUser -Identity $tmplateUser -Properties memberof | Select-Object -ExpandProperty memberof | Add-ADGroupMember -Members $alias
 
 }
 
