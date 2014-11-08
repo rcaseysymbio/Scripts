@@ -29,12 +29,12 @@ $DeptNumber = read-host -prompt "Client Code?"
 		"^acb" {$clienturl="acbanet.org"}
 		"^pfs" {$clienturl="pfs-llc.net"}
 		"^sfc" {$clienturl="sfcasa.org"}
-		"[h]" {$clienturl="hearingspeech.org"}
-		"[t]" {$clienturl="toeroek.com"}
+		"^hsc" {$clienturl="hearingspeech.org"}
+		"^toe" {$clienturl="toeroek.com"}
 		"^abs" {$clienturl="absnorthbay.com"}
         "^sym" {$clienturl="symbiosystems.com"}
         "^dnc" {$clienturl="cunningham-md.com"}
-		"[m]" {$clienturl="mitchelllawsf.com"}
+		"^mlg" {$clienturl="mitchelllawsf.com"}
 				}
 
 $userprincipalname="$alias@$clienturl"
