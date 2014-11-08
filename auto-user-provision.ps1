@@ -1,3 +1,4 @@
+add-pssnapin Microsoft.Exchange.Management.PowerShell.E2010
 
 Import-Module ActiveDirectory
 
@@ -23,17 +24,17 @@ $DeptNumber = read-host -prompt "Client Code?"
 
       switch -regex ($DeptNumber)
 	  {
-		"[p2p]" {$clienturl="power2practice.com"}
-		"[dgr]" {$clienturl="dgrlegal.com"}
-		"[acb]" {$clienturl="acbanet.org"}
-		"[pfs]" {$clienturl="pfs-llc.net"}
-		"[sfc]" {$clienturl="sfcasa.org"}
-		"[hsc]" {$clienturl="hearingspeech.org"}
-		"[toe]" {$clienturl="toeroek.com"}
-		"[abs]" {$clienturl="absnorthbay.com"}
-        "[sym]" {$clienturl="symbiosystems.com"}
-        "[dnc]" {$clienturl="cunningham-md.com"}
-		"[mlg]" {$clienturl="mitchelllawsf.com"}
+		"2p$" {$clienturl="power2practice.com"}
+		"^dgr" {$clienturl="dgrlegal.com"}
+		"^acb" {$clienturl="acbanet.org"}
+		"^pfs" {$clienturl="pfs-llc.net"}
+		"^sfc" {$clienturl="sfcasa.org"}
+		"[h]" {$clienturl="hearingspeech.org"}
+		"[t]" {$clienturl="toeroek.com"}
+		"^abs" {$clienturl="absnorthbay.com"}
+        "^sym" {$clienturl="symbiosystems.com"}
+        "^dnc" {$clienturl="cunningham-md.com"}
+		"[m]" {$clienturl="mitchelllawsf.com"}
 				}
 
 $userprincipalname="$alias@$clienturl"
