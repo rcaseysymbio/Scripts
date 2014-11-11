@@ -1,0 +1,4 @@
+$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://xxx-sfo-home/mail01.$clienturl/PowerShell/ -Authentication Kerberos –AllowRedirection
+
+Import-PSSession $Session
+
