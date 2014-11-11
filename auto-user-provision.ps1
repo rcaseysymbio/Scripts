@@ -1,5 +1,3 @@
-add-pssnapin Microsoft.Exchange.Management.PowerShell.E2010
-
 Import-Module ActiveDirectory
 
 $name = read-host -prompt "First Name?"
@@ -55,6 +53,7 @@ $Parent = $tmpUser.Parent -Replace "LDAP://", ""
 new-mailbox -name $DisplayName -alias $alias -Firstname $name -LastName $lastname -userPrincipalName $userprincipalname -OrganizationalUnit $Parent -Password $Password
 
 #Quickly set the phone number
+
 set-aduser $alias -OfficePhone "$Phone"
 
 #The following is used to create the home folder:
