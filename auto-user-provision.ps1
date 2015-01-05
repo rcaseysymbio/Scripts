@@ -10,11 +10,17 @@ $Password = read-host -prompt "Password?" -AsSecureString
 	  
 $DisplayName = "$Name $lastname"
 	  
-$FirstNameInit=$name
+$FirstNameInit = $name
 
-$FirstNameInit=$FirstNameInit.substring(0,1)
+$FirstNameInit = $FirstNameInit.substring(0,1)
+
+#Make Alias lower case
+
+$FirstNameInit = "$FirstNameInit".toLower()
+
+$lastnamelower = "$lastname".toLower()
 	  
-$alias="$firstnameinit$lastname"
+$alias="$firstnameinit$lastnamelower"
 	  
 $user=$alias
 	  
