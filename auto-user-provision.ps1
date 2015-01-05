@@ -24,6 +24,8 @@ $alias="$firstnameinit$lastnamelower"
 	  
 $user=$alias
 	  
+#Selects $clienturl based on user input
+	  
 $DeptNumber = read-host -prompt "Client Code?"
 
       switch -regex ($DeptNumber)
